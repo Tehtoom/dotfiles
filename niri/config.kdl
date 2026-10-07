@@ -1,109 +1,94 @@
-// This config is in the KDL format: https://kdl.dev
+include "monitor.kdl"
+
 // "/-" comments out the following node.
+// For no window navigation borders
+prefer-no-csd
 
 input {
-    keyboard {
-        xkb {} // set rules, model, layout, variant and options here
-        numlock
+  keyboard {
+    xkb {} // set rules, model, layout, variant and options here
+      numlock false
     }
 
     touchpad {
-        tap
-        natural-scroll
-        accel-speed 0.8
-        accel-profile "flat"
-        // scroll-method "two-finger"
-        // disabled-on-external-mouse
-    }
-
-    mouse {
-        // scroll-method "no-scroll"
-    }
-
-    trackpoint {
-        // scroll-method "on-button-down"
-        // scroll-button 273
-        // scroll-button-lock
-        // middle-emulation
+      tap
+      natural-scroll
+      accel-speed 0.8
+      accel-profile "flat"
+      scroll-method "two-finger"
+      disabled-on-external-mouse
     }
 }
 
 layout {
-    gaps 8
+  gaps 8
+  center-focused-column "never"
+  default-column-width { proportion 0.5; }
+  background-color "transparent"
+  preset-column-widths {
+    proportion 0.33333
+    proportion 0.5
+    proportion 0.66667
+    proportion 1.0
+  }
 
-    center-focused-column "never"
+  focus-ring {
+    off
+    width 20
+    active-color "transparent"
+    inactive-color "transparent"
 
-    default-column-width { proportion 0.5; }
+    // Active Gradients
+    //active-gradient from="#80c8ff" to="#c7ff7f" angle=45
+    //inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
+  }
 
-   preset-column-widths {
-        proportion 0.33333
-        proportion 0.5
-        proportion 0.66667
-        proportion 1.0
-    }
+  border {
+    // Same settings as focus ring
+    // disable focus ring to use border
+    off
+    width 4
+    // active-color "#ffc87f"
+    // inactive-color "#505050"
+    // urgent-color "#9b0000"
+  }
 
+  // By default, the shadow draws only around its window, and not behind it.
+  shadow {
+    on
+    draw-behind-window true
 
-
-    focus-ring {
-        off
-        width 4
-        active-color "#7fc8ff"
-        inactive-color "#505050"
-
-        // Active Gradients
-        // from="#80c8ff" to="#c7ff7f" angle=45
-        // inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
-    }
-
-    border {
-        // Same settings as focus ring
-        // disable focus ring to use border
-        off
-        width 4
-        active-color "#ffc87f"
-        inactive-color "#505050"
-        urgent-color "#9b0000"
-
-    }
-
-
-    // By default, the shadow draws only around its window, and not behind it.
-    shadow {
-        on
-
-        /-draw-behind-window true
-
-        // Blur radius
-        softness 30
-
-        // Shadow
-        spread 5
-
-        offset x=0 y=5
-
-        // Colour and opacity
-        color "#0007"
-    }
-
-    struts {} // Can be implemented
-}
-
-animations {
-    // off
-    // slowdown 3.0
+    // Blur radius
+    softness 30
+    // Shadow
+    spread 10
+    offset x=0 y=0
+    color "#0007"
+  }
+  
+  struts {}
 }
 
 
-// Start up applications
-//spawn-at-startup "waybar"
+
+
+overview {
+  backdrop-color "transparent"
+}
+
+animations {}
+
+/- spawn-at-startup "wayvnc" "" "5900"
+
 spawn-at-startup "awww-daemon"
+spawn-at-startup "waypaper" "--restore"
+layer-rule {
+  place-within-backdrop true
+}
 
 hotkey-overlay {
-    skip-at-startup 
+    skip-at-startup
 }
-
-// Start up commands
-// spawn-sh-at-startup
 
 // Screenshot path
 screenshot-path "~/Media/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
@@ -128,20 +113,15 @@ window-rule {
 }
 
 binds {
-    // shows a list of important hotkeys.
-    Mod+Shift+Slash { show-hotkey-overlay; }
+    Shift+Print { spawn "niri" "msg" "action" "power-off-monitors"; }
 
     // Binds for running programs
     Mod+Return  { spawn "alacritty"; }
-    Mod+B       { spawn "firefox"; }
+    Mod+B       { spawn "floorp"; }
     Mod+V       { spawn "vesktop"; }
     Mod+D       { spawn "rofi" "-show" "drun"; }
 
-    // Use spawn-sh to run a shell command
-    Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
-
     // Volume keys mappings for PipeWire & WirePlumber.
-    // "-l 1.0" limits the volume to 100%.
     XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
     XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
@@ -151,9 +131,7 @@ binds {
     XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
 
-
-    Mod+O repeat=false { toggle-overview; }
-
+    Mod+Tab repeat=false { toggle-overview; }
     Mod+Q repeat=false { close-window; }
 
     Mod+Left  { focus-column-left; }
@@ -178,7 +156,7 @@ binds {
     // Mod+K     { focus-window-or-workspace-up; }
     // Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
     // Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
-
+ 
     Mod+Home { focus-column-first; }
     Mod+End  { focus-column-last; }
     Mod+Ctrl+Home { move-column-to-first; }
